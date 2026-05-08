@@ -201,8 +201,12 @@
     .notice {
       margin: 14px 0 0;
       color: var(--muted);
-      font-size: 12px;
-      line-height: 1.65;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .notice strong {
+      color: var(--ink);
     }
 
     .diagnosis {
@@ -325,6 +329,14 @@
       font-size: 14px;
     }
 
+    .answer-message {
+      min-height: 24px;
+      margin: 12px 0 0;
+      color: #8b2525;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
     .result {
       display: none;
       padding: 18px 0 48px;
@@ -374,7 +386,7 @@
     }
 
     .section {
-      padding: 18px 0;
+      padding: 20px 0;
       border-bottom: 1px solid var(--line);
     }
 
@@ -396,7 +408,34 @@
     .section p {
       margin: 0;
       color: #3f3f3f;
-      font-size: 14px;
+      font-size: 15px;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 8px;
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .check-list li {
+      position: relative;
+      padding-left: 18px;
+      color: #3f3f3f;
+      font-size: 15px;
+      line-height: 1.65;
+    }
+
+    .check-list li::before {
+      content: "";
+      position: absolute;
+      top: 0.72em;
+      left: 0;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--gold);
     }
 
     .menu-card {
@@ -415,7 +454,7 @@
 
     .cta-area {
       display: grid;
-      gap: 10px;
+      gap: 12px;
       padding-top: 18px;
     }
 
@@ -435,7 +474,23 @@
     }
 
     .restart {
-      margin-top: 14px;
+      margin-top: 0;
+    }
+
+    .copy-status {
+      display: none;
+      margin: 0;
+      padding: 12px 13px;
+      color: #315b33;
+      background: #edf6ec;
+      border: 1px solid #cfe4cc;
+      border-radius: var(--radius);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .copy-status.active {
+      display: block;
     }
 
     .footer-note {
@@ -465,6 +520,27 @@
         grid-template-columns: 1fr 1fr;
       }
     }
+
+    @media (max-width: 380px) {
+      .wrap {
+        padding-inline: 14px;
+      }
+
+      .question-box,
+      .result-body,
+      .hero-panel {
+        padding: 17px;
+      }
+
+      .button {
+        min-height: 60px;
+        padding-inline: 14px;
+      }
+
+      .result-title {
+        font-size: 25px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -490,7 +566,7 @@
             <li><span class="dot"></span>初回体験の目安がわかる</li>
           </ul>
           <button class="button button-primary" type="button" id="startButton">診断をはじめる</button>
-          <p class="notice">この診断は医療行為・医療診断ではありません。体調に不安がある方、治療中の方、痛みがある方は医師など専門家にご相談ください。</p>
+          <p class="notice"><strong>ご注意</strong><br>この診断は、運動習慣づくりの参考として作成したセルフチェックです。医学的診断や治療方針を示すものではありません。痛み、しびれ、治療中の疾患、妊娠中・産後など不安がある場合は、医師など専門家にご相談ください。</p>
         </div>
       </section>
 
@@ -509,6 +585,7 @@
           <p class="q-axis" id="questionAxis">目的の傾向</p>
           <h2 class="question" id="questionText"></h2>
           <div class="answers" id="answers"></div>
+          <p class="answer-message" id="answerMessage" aria-live="polite"></p>
           <div class="nav-row">
             <button class="button button-ghost" type="button" id="backButton">戻る</button>
             <button class="button button-primary" type="button" id="nextButton">次へ</button>
@@ -537,6 +614,10 @@
               <p id="resultStart"></p>
             </div>
             <div class="section">
+              <h2>おすすめの初回体験で確認すること</h2>
+              <ul class="check-list" id="resultTrialChecks"></ul>
+            </div>
+            <div class="section">
               <h2>imamu.でのおすすめメニュー</h2>
               <div class="menu-card">
                 <strong id="resultMenu"></strong>
@@ -546,11 +627,13 @@
             <div class="section">
               <div class="price">初回体験 <span>2,000円</span></div>
               <div class="cta-area">
-                <a class="button button-gold" href="https://personalgymkitami-imamuu.com/" target="_blank" rel="noopener">初回体験を予約する</a>
-                <a class="button button-primary" href="https://personalgymkitami-imamuu.com/" target="_blank" rel="noopener">LINEで相談する</a>
+                <button class="button button-primary" type="button" id="copyResultButton">診断結果をコピーする</button>
+                <p class="copy-status" id="copyStatus" aria-live="polite">診断結果をコピーしました。LINEでそのまま貼り付けてご相談ください。</p>
+                <a class="button button-primary" href="https://page.line.me/948sbivq" target="_blank" rel="noopener">この結果をLINEで相談する</a>
+                <a class="button button-gold" href="https://personalgymkitami-imamuu.com/" target="_blank" rel="noopener">初回体験60分 2,000円を予約する</a>
+                <button class="button button-ghost restart" type="button" id="restartButton">もう一度診断する</button>
               </div>
-              <button class="button button-ghost restart" type="button" id="restartButton">もう一度診断する</button>
-              <p class="notice">診断結果は運動の始め方を考えるための目安です。身体の痛みや疾患の判断、治療方針を示すものではありません。</p>
+              <p class="notice"><strong>ご注意</strong><br>この診断は、運動習慣づくりの参考として作成したセルフチェックです。医学的診断や治療方針を示すものではありません。痛み、しびれ、治療中の疾患、妊娠中・産後など不安がある場合は、医師など専門家にご相談ください。</p>
             </div>
           </div>
         </div>
@@ -715,49 +798,58 @@
     const copyByAxis = {
       purpose: [
         {
-          feature: "見た目の変化がモチベーションになりやすく、姿勢や身体のラインを丁寧に整えるほど前向きになれるタイプです。",
-          start: "まずは体型の悩みを言葉にして、ウエスト、背中、脚など優先順位を絞るところから始めるのがおすすめです。"
+          feature: "見た目の変化がモチベーションになりやすく、姿勢や身体のラインを丁寧に整えるほど前向きになれるタイプです。無理に頑張るより、まずは自分に合う入口を見つけることが大切です。",
+          start: "まずは体型の悩みを言葉にして、ウエスト、背中、脚など優先順位を絞るところから始めるのがおすすめです。初回体験では、今の身体に合う目標設定から一緒に確認できます。",
+          trialChecks: ["姿勢や身体のラインの現状を確認する", "ダイエットや引き締めの目標設定をする"]
         },
         {
-          feature: "体力、動きやすさ、疲れにくさなど、身体の機能が上がるほど継続意欲が高まりやすいタイプです。",
-          start: "初回は動作チェックと軽い筋力テストで現在地を確認し、日常で変化を感じやすい種目から始めるのがおすすめです。"
+          feature: "体力、動きやすさ、疲れにくさなど、身体の機能が上がるほど継続意欲が高まりやすいタイプです。運動が得意でなくても、今の体力に合う入口から始めると安心です。",
+          start: "初回は動作チェックと軽い筋力確認で現在地を見て、日常で変化を感じやすい種目から始めるのがおすすめです。まずはLINE相談や初回体験で、無理のない進め方を確認できます。",
+          trialChecks: ["姿勢や動きやすさを確認する", "今の体力に合う運動強度を確認する"]
         }
       ],
       action: [
         {
-          keep: "予約の曜日、目標、トレーニング内容を見える化すると続きやすくなります。小さな達成を積み上げる設計が合います。",
-          menu: "目標設計カウンセリング付きパーソナルトレーニング"
+          keep: "予約の曜日、目標、トレーニング内容を見える化すると続きやすくなります。小さな達成を積み上げる設計なら、初心者の方でも迷いにくくなります。",
+          menu: "目標設計カウンセリング付きパーソナルトレーニング",
+          trialChecks: ["運動が続きやすい頻度を相談する", "無理なく通えるスケジュールを確認する"]
         },
         {
           keep: "その日の体調や気分に合わせて内容を調整すると続きやすくなります。完璧さより、来られたことを成功にする設計が合います。",
-          menu: "コンディションに合わせるオーダーメイドトレーニング"
+          menu: "コンディションに合わせるオーダーメイドトレーニング",
+          trialChecks: ["体調に合わせたメニュー調整の方法を確認する", "気分に左右されにくい続け方を相談する"]
         }
       ],
       environment: [
         {
-          keep: "完全個室で人目を気にせず、自分のペースで集中できる環境が力になります。",
-          menuText: "周りを気にせずフォーム確認とトレーニングに集中。初心者の方も落ち着いて始められます。"
+          keep: "完全個室で人目を気にせず、自分のペースで集中できる環境が力になります。周りと比べずに進められることが安心材料になります。",
+          menuText: "imamu.では完全個室で、姿勢・筋力・柔軟性を確認しながら始められます。周りを気にせずフォーム確認とトレーニングに集中できます。",
+          trialChecks: ["完全個室で安心して運動できるか確認する"]
         },
         {
-          keep: "トレーナーの声かけや伴走があると、あと少しの一歩が出やすいタイプです。",
-          menuText: "一人では続きにくい方にも、丁寧な声かけで前向きに取り組める体験をご用意します。"
+          keep: "トレーナーの声かけや伴走があると、あと少しの一歩が出やすいタイプです。一人で抱え込まず、相談しながら進めると続きやすくなります。",
+          menuText: "imamu.では完全個室で周りを気にせず相談できます。一人では続きにくい方にも、丁寧な声かけで前向きに取り組める体験をご用意します。",
+          trialChecks: ["トレーナーとの相性や声かけのペースを確認する"]
         }
       ],
       improve: [
         {
           feature: "身体を整えるほど調子が上がる傾向があります。姿勢、呼吸、可動域を見直すことでトレーニング効果も出しやすくなります。",
-          menuTextAdd: "姿勢チェック、ストレッチ、フォームづくりを含めて、無理なく土台から整えます。"
+          menuTextAdd: "姿勢チェック、ストレッチ、フォームづくりを含めて、無理なく土台から整えます。痛みや不安がない範囲で、安心して始められる内容を確認します。",
+          trialChecks: ["柔軟性やフォームのクセを確認する", "無理なく整える優先順位を相談する"]
         },
         {
           feature: "適度な負荷と達成感が変化のスイッチになりやすいタイプです。安全に効かせることで満足感が高まります。",
-          menuTextAdd: "正しいフォームでしっかり効かせ、終わった後に手応えを感じられる内容にします。"
+          menuTextAdd: "正しいフォームでしっかり効かせ、終わった後に手応えを感じられる内容にします。負荷は今の体力に合わせて調整するので、運動が久しぶりの方も安心です。",
+          trialChecks: ["今の筋力に合う負荷を確認する", "頑張りすぎない強度の目安を相談する"]
         }
       ]
     };
 
     const state = {
       index: 0,
-      answers: Array(questions.length).fill(null)
+      answers: Array(questions.length).fill(null),
+      resultCopyText: ""
     };
 
     const startButton = document.getElementById("startButton");
@@ -772,9 +864,12 @@
     const backButton = document.getElementById("backButton");
     const nextButton = document.getElementById("nextButton");
     const restartButton = document.getElementById("restartButton");
+    const answerMessage = document.getElementById("answerMessage");
+    const copyResultButton = document.getElementById("copyResultButton");
+    const copyStatus = document.getElementById("copyStatus");
 
-    document.querySelectorAll(".cta-area a")[0].href = bookingUrl;
-    document.querySelectorAll(".cta-area a")[1].href = lineUrl;
+    document.querySelectorAll(".cta-area a")[0].href = lineUrl;
+    document.querySelectorAll(".cta-area a")[1].href = bookingUrl;
 
     function renderQuestion() {
       const item = questions[state.index];
@@ -791,6 +886,7 @@
       nextButton.textContent = state.index === questions.length - 1 ? "結果を見る" : "次へ";
       nextButton.disabled = currentAnswer === null;
       nextButton.style.opacity = currentAnswer === null ? "0.55" : "1";
+      answerMessage.textContent = currentAnswer === null ? "回答を選ぶと次へ進めます。" : "";
 
       answersEl.innerHTML = "";
       item.answers.forEach((answer, answerIndex) => {
@@ -829,7 +925,10 @@
     }
 
     function showResult() {
+      // 4軸のスコアを集計
       const scores = getScores();
+
+      // タイプキーを生成
       const key = `${scores.purpose}${scores.action}${scores.environment}${scores.improve}`;
       const labels = [
         axisLabels.purpose[scores.purpose],
@@ -838,6 +937,10 @@
         axisLabels.improve[scores.improve]
       ];
 
+      // タイプ名を取得
+      const typeName = typeNames[key];
+
+      // 軸ごとのコピーを組み合わせ
       const feature = [
         copyByAxis.purpose[scores.purpose].feature,
         copyByAxis.improve[scores.improve].feature
@@ -855,13 +958,36 @@
         copyByAxis.improve[scores.improve].menuTextAdd
       ].join("");
 
-      document.getElementById("resultTitle").textContent = typeNames[key];
+      const trialChecks = [
+        ...copyByAxis.purpose[scores.purpose].trialChecks,
+        ...copyByAxis.action[scores.action].trialChecks,
+        ...copyByAxis.environment[scores.environment].trialChecks,
+        ...copyByAxis.improve[scores.improve].trialChecks
+      ];
+
+      // LINE相談用コピー文を生成
+      state.resultCopyText = [
+        "imamu.フィットネスタイプ診断の結果は",
+        `「${typeName}」でした。`,
+        "",
+        "4軸の結果：",
+        `・目的：${labels[0]}`,
+        `・行動：${labels[1]}`,
+        `・環境：${labels[2]}`,
+        `・改善：${labels[3]}`,
+        "",
+        "この結果をもとに、初回体験や自分に合う運動の始め方について相談したいです。"
+      ].join("\n");
+
+      document.getElementById("resultTitle").textContent = typeName;
       document.getElementById("resultCode").textContent = labels.join(" / ");
       document.getElementById("resultFeature").textContent = feature;
       document.getElementById("resultKeep").textContent = keep;
       document.getElementById("resultStart").textContent = start;
       document.getElementById("resultMenu").textContent = menu;
       document.getElementById("resultMenuText").textContent = menuText;
+      document.getElementById("resultTrialChecks").innerHTML = trialChecks.map((check) => `<li>${check}</li>`).join("");
+      copyStatus.classList.remove("active");
 
       diagnosis.classList.remove("active");
       result.classList.add("active");
@@ -884,7 +1010,10 @@
     });
 
     nextButton.addEventListener("click", () => {
-      if (state.answers[state.index] === null) return;
+      if (state.answers[state.index] === null) {
+        answerMessage.textContent = "回答を1つ選んでください。";
+        return;
+      }
 
       if (state.index === questions.length - 1) {
         showResult();
@@ -898,10 +1027,32 @@
     restartButton.addEventListener("click", () => {
       state.index = 0;
       state.answers = Array(questions.length).fill(null);
+      state.resultCopyText = "";
+      copyStatus.classList.remove("active");
       result.classList.remove("active");
       diagnosis.classList.add("active");
       renderQuestion();
       window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    copyResultButton.addEventListener("click", async () => {
+      if (!state.resultCopyText) return;
+
+      try {
+        await navigator.clipboard.writeText(state.resultCopyText);
+      } catch (error) {
+        const textarea = document.createElement("textarea");
+        textarea.value = state.resultCopyText;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+
+      copyStatus.classList.add("active");
     });
   </script>
 </body>
