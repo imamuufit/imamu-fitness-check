@@ -3,8 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>imamu. フィットネス診断</title>
-  <meta name="description" content="12問であなたに合う運動の続け方を診断。imamu.パーソナルジムキタミの初回体験予約へつなげるフィットネス診断ページです。">
+  <title>imamu.フィットネスタイプ診断｜完全個室パーソナルジムキタミ</title>
+  <meta name="description" content="12問で、あなたに合う運動の始め方がわかるセルフチェック。北見市の完全個室パーソナルジム imamu. が、初回体験やLINE相談の前に体づくりの入口を見つけるお手伝いをします。">
+  <meta property="og:title" content="imamu.フィットネスタイプ診断｜完全個室パーソナルジムキタミ">
+  <meta property="og:description" content="12問で、あなたに合う運動の始め方がわかるセルフチェック。北見市の完全個室パーソナルジム imamu. が、初回体験やLINE相談の前に体づくりの入口を見つけるお手伝いをします。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://personalgymkitami-imamuu.com/">
   <style>
     :root {
       --white: #ffffff;
@@ -339,7 +343,7 @@
 
     .result {
       display: none;
-      padding: 18px 0 48px;
+      padding: 18px 0 68px;
     }
 
     .result.active {
@@ -455,7 +459,16 @@
     .cta-area {
       display: grid;
       gap: 12px;
-      padding-top: 18px;
+      padding-top: 20px;
+      padding-bottom: max(18px, env(safe-area-inset-bottom));
+    }
+
+    .cta-guide {
+      margin: 12px 0 0;
+      color: #3f3f3f;
+      font-size: 14px;
+      line-height: 1.7;
+      text-align: left;
     }
 
     .price {
@@ -535,6 +548,12 @@
       .button {
         min-height: 60px;
         padding-inline: 14px;
+      }
+
+      .price {
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
       }
 
       .result-title {
@@ -626,6 +645,7 @@
             </div>
             <div class="section">
               <div class="price">初回体験 <span>2,000円</span></div>
+              <p class="cta-guide">診断結果をコピーしてLINEで送っていただくと、あなたに合う始め方をスムーズにご案内できます。</p>
               <div class="cta-area">
                 <button class="button button-primary" type="button" id="copyResultButton">診断結果をコピーする</button>
                 <p class="copy-status" id="copyStatus" aria-live="polite">診断結果をコピーしました。LINEでそのまま貼り付けてご相談ください。</p>
