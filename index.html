@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>imamu. フィットネス診断</title>
+  <meta name="description" content="12問であなたに合う運動の続け方を診断。imamu.パーソナルジムキタミの初回体験予約へつなげるフィットネス診断ページです。">
+  <style>
+    :root {
+      --white: #ffffff;
+      --ink: #171717;
+      --muted: #686868;
+      --line: #e7e2d8;
+      --soft: #f7f6f3;
+      --soft-2: #eeeeec;
+      --gold: #c8ad68;
+      --gold-dark: #9c7f35;
+      --black: #050505;
+      --shadow: 0 18px 50px rgba(20, 20, 20, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--white);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.75;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .page {
+      min-height: 100vh;
+      background:
+        linear-gradient(180deg, rgba(247, 246, 243, 0.9), rgba(255, 255, 255, 1) 44%),
+        radial-gradient(circle at 8% 0%, rgba(200, 173, 104, 0.16), transparent 34%);
+    }
+
+    .wrap {
+      width: min(100%, 760px);
+      margin: 0 auto;
+      padding: 20px 18px 40px;
+    }
+
+    .hero {
+      min-height: 92svh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 26px;
+      padding: 18px 0 30px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 16px;
+    }
+
+    .logo {
+      font-size: 25px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .logo span {
+      color: var(--gold-dark);
+    }
+
+    .badge {
+      color: var(--gold-dark);
+      background: rgba(200, 173, 104, 0.12);
+      border: 1px solid rgba(200, 173, 104, 0.35);
+      border-radius: 999px;
+      padding: 7px 11px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .hero-copy {
+      padding-top: 14px;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--gold-dark);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 10vw, 56px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin: 18px 0 0;
+      color: #3f3f3f;
+      font-size: 16px;
+    }
+
+    .hero-panel,
+    .question-box,
+    .result-box {
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel {
+      padding: 18px;
+    }
+
+    .quick-points {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin: 0 0 18px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .quick-points li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #343434;
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      flex: 0 0 9px;
+      background: var(--gold);
+      border-radius: 50%;
+    }
+
+    .button {
+      width: 100%;
+      min-height: 58px;
+      border: 0;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 15px 18px;
+      text-decoration: none;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+
+    .button:active {
+      transform: translateY(1px);
+    }
+
+    .button-primary {
+      background: var(--black);
+      color: var(--white);
+      box-shadow: 0 14px 26px rgba(0, 0, 0, 0.16);
+    }
+
+    .button-primary:hover {
+      background: #242424;
+    }
+
+    .button-gold {
+      background: var(--gold);
+      color: #141414;
+      box-shadow: 0 14px 26px rgba(156, 127, 53, 0.18);
+    }
+
+    .button-ghost {
+      background: var(--white);
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+
+    .notice {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .diagnosis {
+      display: none;
+      padding: 18px 0 44px;
+    }
+
+    .diagnosis.active {
+      display: block;
+    }
+
+    .progress {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      margin: 0 -18px 18px;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(12px);
+    }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 9px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .bar {
+      overflow: hidden;
+      height: 8px;
+      background: var(--soft-2);
+      border-radius: 999px;
+    }
+
+    .bar-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--gold);
+      border-radius: inherit;
+      transition: width 0.25s ease;
+    }
+
+    .question-box {
+      padding: 20px;
+    }
+
+    .q-axis {
+      margin: 0 0 7px;
+      color: var(--gold-dark);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .question {
+      margin: 0 0 18px;
+      font-size: 21px;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .answers {
+      display: grid;
+      gap: 12px;
+    }
+
+    .answer {
+      width: 100%;
+      min-height: 72px;
+      padding: 15px;
+      text-align: left;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid #ded8cb;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: border 0.18s ease, background 0.18s ease, transform 0.18s ease;
+    }
+
+    .answer:hover,
+    .answer:focus-visible {
+      border-color: var(--gold);
+      background: #fffdf7;
+      outline: none;
+    }
+
+    .answer.selected {
+      border-color: var(--gold-dark);
+      background: rgba(200, 173, 104, 0.16);
+    }
+
+    .answer-title {
+      display: block;
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .answer-note {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .nav-row {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .nav-row .button {
+      min-height: 54px;
+      font-size: 14px;
+    }
+
+    .result {
+      display: none;
+      padding: 18px 0 48px;
+    }
+
+    .result.active {
+      display: block;
+    }
+
+    .result-box {
+      overflow: hidden;
+    }
+
+    .result-head {
+      padding: 24px 20px;
+      background: linear-gradient(135deg, #111111, #34312a);
+      color: var(--white);
+    }
+
+    .result-label {
+      margin: 0 0 8px;
+      color: #e5d39b;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .result-title {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.24;
+      letter-spacing: 0;
+    }
+
+    .type-code {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 7px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      border-radius: 999px;
+      color: #f0e6c9;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .result-body {
+      padding: 20px;
+    }
+
+    .section {
+      padding: 18px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section:first-child {
+      padding-top: 0;
+    }
+
+    .section:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    .section h2 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .section p {
+      margin: 0;
+      color: #3f3f3f;
+      font-size: 14px;
+    }
+
+    .menu-card {
+      margin-top: 10px;
+      padding: 14px;
+      background: var(--soft);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .menu-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 16px;
+    }
+
+    .cta-area {
+      display: grid;
+      gap: 10px;
+      padding-top: 18px;
+    }
+
+    .price {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 6px;
+      margin: 4px 0 2px;
+      font-weight: 900;
+    }
+
+    .price span {
+      color: var(--gold-dark);
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .restart {
+      margin-top: 14px;
+    }
+
+    .footer-note {
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    @media (min-width: 700px) {
+      .wrap {
+        padding-inline: 28px;
+      }
+
+      .hero {
+        min-height: 820px;
+      }
+
+      .hero-panel,
+      .question-box,
+      .result-body {
+        padding: 28px;
+      }
+
+      .quick-points {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <div class="wrap">
+      <section class="hero" id="top">
+        <div class="brand" aria-label="imamu. パーソナルジムキタミ">
+          <div class="logo">imamu<span>.</span></div>
+          <div class="badge">完全個室ジム</div>
+        </div>
+
+        <div class="hero-copy">
+          <p class="eyebrow">12問でわかる</p>
+          <h1>あなたに合う<br>フィットネス診断</h1>
+          <p class="lead">運動を始めたいけれど、何から始めればいいかわからない方へ。目的や性格に合わせて、続けやすいジムの使い方を見つけます。</p>
+        </div>
+
+        <div class="hero-panel">
+          <ul class="quick-points" aria-label="診断の特徴">
+            <li><span class="dot"></span>スマホで約2分</li>
+            <li><span class="dot"></span>初心者の方も安心</li>
+            <li><span class="dot"></span>4つの軸で16タイプ診断</li>
+            <li><span class="dot"></span>初回体験の目安がわかる</li>
+          </ul>
+          <button class="button button-primary" type="button" id="startButton">診断をはじめる</button>
+          <p class="notice">この診断は医療行為・医療診断ではありません。体調に不安がある方、治療中の方、痛みがある方は医師など専門家にご相談ください。</p>
+        </div>
+      </section>
+
+      <section class="diagnosis" id="diagnosis" aria-live="polite">
+        <div class="progress">
+          <div class="progress-top">
+            <span id="questionCount">1 / 12</span>
+            <span id="axisName">目的</span>
+          </div>
+          <div class="bar" aria-hidden="true">
+            <div class="bar-fill" id="barFill"></div>
+          </div>
+        </div>
+
+        <div class="question-box">
+          <p class="q-axis" id="questionAxis">目的の傾向</p>
+          <h2 class="question" id="questionText"></h2>
+          <div class="answers" id="answers"></div>
+          <div class="nav-row">
+            <button class="button button-ghost" type="button" id="backButton">戻る</button>
+            <button class="button button-primary" type="button" id="nextButton">次へ</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="result" id="result" aria-live="polite">
+        <div class="result-box">
+          <div class="result-head">
+            <p class="result-label">診断結果</p>
+            <h2 class="result-title" id="resultTitle"></h2>
+            <div class="type-code" id="resultCode"></div>
+          </div>
+          <div class="result-body">
+            <div class="section">
+              <h2>特徴</h2>
+              <p id="resultFeature"></p>
+            </div>
+            <div class="section">
+              <h2>運動が続きやすいポイント</h2>
+              <p id="resultKeep"></p>
+            </div>
+            <div class="section">
+              <h2>おすすめの始め方</h2>
+              <p id="resultStart"></p>
+            </div>
+            <div class="section">
+              <h2>imamu.でのおすすめメニュー</h2>
+              <div class="menu-card">
+                <strong id="resultMenu"></strong>
+                <p id="resultMenuText"></p>
+              </div>
+            </div>
+            <div class="section">
+              <div class="price">初回体験 <span>2,000円</span></div>
+              <div class="cta-area">
+                <a class="button button-gold" href="https://personalgymkitami-imamuu.com/" target="_blank" rel="noopener">初回体験を予約する</a>
+                <a class="button button-primary" href="https://personalgymkitami-imamuu.com/" target="_blank" rel="noopener">LINEで相談する</a>
+              </div>
+              <button class="button button-ghost restart" type="button" id="restartButton">もう一度診断する</button>
+              <p class="notice">診断結果は運動の始め方を考えるための目安です。身体の痛みや疾患の判断、治療方針を示すものではありません。</p>
+            </div>
+          </div>
+        </div>
+        <p class="footer-note">imamu. パーソナルジムキタミ</p>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const bookingUrl = "https://personalgymkitami-imamuu.com/";
+    const lineUrl = "https://page.line.me/948sbivq";
+
+    const axisLabels = {
+      purpose: ["見た目改善型", "パフォーマンス向上型"],
+      action: ["計画型", "気分型"],
+      environment: ["個室集中型", "応援刺激型"],
+      improve: ["整える型", "追い込む型"]
+    };
+
+    const questions = [
+      {
+        axis: "purpose",
+        axisName: "目的",
+        label: "目的の傾向",
+        text: "ジムに通うなら、まず一番変えたいことは？",
+        answers: [
+          { text: "鏡で見た時の体型や姿勢を整えたい", note: "服をきれいに着たい、引き締めたい", value: 0 },
+          { text: "体力や動きの質を上げたい", note: "疲れにくさ、スポーツ、日常動作を良くしたい", value: 1 }
+        ]
+      },
+      {
+        axis: "action",
+        axisName: "行動",
+        label: "行動の傾向",
+        text: "新しい習慣を始める時、しっくりくるのは？",
+        answers: [
+          { text: "予定を決めて、順番に進めたい", note: "やることが明確だと安心できる", value: 0 },
+          { text: "その日の気分や状態に合わせたい", note: "無理なく柔軟に進めたい", value: 1 }
+        ]
+      },
+      {
+        axis: "environment",
+        axisName: "環境",
+        label: "環境の傾向",
+        text: "トレーニング中の空間で落ち着くのは？",
+        answers: [
+          { text: "周りを気にせず集中できる空間", note: "人目が少ない方が力を出しやすい", value: 0 },
+          { text: "声かけや雰囲気で前向きになれる空間", note: "応援があると頑張りやすい", value: 1 }
+        ]
+      },
+      {
+        axis: "improve",
+        axisName: "改善",
+        label: "改善の傾向",
+        text: "今の身体に一番必要だと感じるのは？",
+        answers: [
+          { text: "姿勢、呼吸、柔軟性を整えること", note: "まずは土台をつくりたい", value: 0 },
+          { text: "しっかり動いて達成感を得ること", note: "汗をかいて変化を感じたい", value: 1 }
+        ]
+      },
+      {
+        axis: "purpose",
+        axisName: "目的",
+        label: "目的の傾向",
+        text: "3か月後にうれしい変化は？",
+        answers: [
+          { text: "ウエストや背中まわりがすっきりする", note: "見た目の印象を変えたい", value: 0 },
+          { text: "階段や仕事後の疲れが軽くなる", note: "動ける身体を手に入れたい", value: 1 }
+        ]
+      },
+      {
+        axis: "action",
+        axisName: "行動",
+        label: "行動の傾向",
+        text: "続けるために必要なのは？",
+        answers: [
+          { text: "目標、回数、メニューが見えること", note: "進捗がわかると続く", value: 0 },
+          { text: "楽しい、気持ちいいと思えること", note: "前向きな感覚があると続く", value: 1 }
+        ]
+      },
+      {
+        axis: "environment",
+        axisName: "環境",
+        label: "環境の傾向",
+        text: "初めてのジムで気になることは？",
+        answers: [
+          { text: "人目や他のお客様の視線", note: "静かな環境だと安心", value: 0 },
+          { text: "一人だと最後まで頑張れるか", note: "伴走や声かけがあると安心", value: 1 }
+        ]
+      },
+      {
+        axis: "improve",
+        axisName: "改善",
+        label: "改善の傾向",
+        text: "トレーナーにまず見てほしいのは？",
+        answers: [
+          { text: "姿勢のクセや身体の使い方", note: "不調を出しにくい動きにしたい", value: 0 },
+          { text: "自分に合う負荷や限界の一歩手前", note: "効いている感覚を知りたい", value: 1 }
+        ]
+      },
+      {
+        axis: "purpose",
+        axisName: "目的",
+        label: "目的の傾向",
+        text: "トレーニング後に感じたいことは？",
+        answers: [
+          { text: "身体のラインが整ってきた実感", note: "見た目の変化が励みになる", value: 0 },
+          { text: "前より動ける、強くなった実感", note: "能力の変化が励みになる", value: 1 }
+        ]
+      },
+      {
+        axis: "action",
+        axisName: "行動",
+        label: "行動の傾向",
+        text: "予約の入れ方で合いそうなのは？",
+        answers: [
+          { text: "曜日や時間を固定して習慣化したい", note: "生活リズムに組み込みたい", value: 0 },
+          { text: "生活に合わせて無理なく調整したい", note: "その時の余裕を大切にしたい", value: 1 }
+        ]
+      },
+      {
+        axis: "environment",
+        axisName: "環境",
+        label: "環境の傾向",
+        text: "トレーナーとの距離感は？",
+        answers: [
+          { text: "落ち着いて丁寧に見守ってほしい", note: "安心して集中したい", value: 0 },
+          { text: "明るく背中を押してほしい", note: "一緒に盛り上げてほしい", value: 1 }
+        ]
+      },
+      {
+        axis: "improve",
+        axisName: "改善",
+        label: "改善の傾向",
+        text: "初回体験で期待することは？",
+        answers: [
+          { text: "自分の身体の状態を知ること", note: "原因や改善ポイントを整理したい", value: 0 },
+          { text: "しっかり動いて手応えを得ること", note: "変われそうな感覚がほしい", value: 1 }
+        ]
+      }
+    ];
+
+    const typeNames = {
+      "0000": "静かに整えるボディメイクタイプ",
+      "0001": "集中して攻める引き締めタイプ",
+      "0010": "励まされて整うボディメイクタイプ",
+      "0011": "応援で伸びる引き締めタイプ",
+      "0100": "気分に寄り添う姿勢美タイプ",
+      "0101": "楽しく追い込むメリハリタイプ",
+      "0110": "声かけで整うやさしい改善タイプ",
+      "0111": "明るく燃える変化実感タイプ",
+      "1000": "黙々と高めるコンディションタイプ",
+      "1001": "集中して伸ばすパワーアップタイプ",
+      "1010": "伴走で整う動ける身体タイプ",
+      "1011": "応援で伸びるパフォーマンスタイプ",
+      "1100": "柔軟に整えるアクティブケアタイプ",
+      "1101": "気分よく鍛えるアクティブタイプ",
+      "1110": "楽しく整うエネルギー回復タイプ",
+      "1111": "前向きに挑むフルパワータイプ"
+    };
+
+    const copyByAxis = {
+      purpose: [
+        {
+          feature: "見た目の変化がモチベーションになりやすく、姿勢や身体のラインを丁寧に整えるほど前向きになれるタイプです。",
+          start: "まずは体型の悩みを言葉にして、ウエスト、背中、脚など優先順位を絞るところから始めるのがおすすめです。"
+        },
+        {
+          feature: "体力、動きやすさ、疲れにくさなど、身体の機能が上がるほど継続意欲が高まりやすいタイプです。",
+          start: "初回は動作チェックと軽い筋力テストで現在地を確認し、日常で変化を感じやすい種目から始めるのがおすすめです。"
+        }
+      ],
+      action: [
+        {
+          keep: "予約の曜日、目標、トレーニング内容を見える化すると続きやすくなります。小さな達成を積み上げる設計が合います。",
+          menu: "目標設計カウンセリング付きパーソナルトレーニング"
+        },
+        {
+          keep: "その日の体調や気分に合わせて内容を調整すると続きやすくなります。完璧さより、来られたことを成功にする設計が合います。",
+          menu: "コンディションに合わせるオーダーメイドトレーニング"
+        }
+      ],
+      environment: [
+        {
+          keep: "完全個室で人目を気にせず、自分のペースで集中できる環境が力になります。",
+          menuText: "周りを気にせずフォーム確認とトレーニングに集中。初心者の方も落ち着いて始められます。"
+        },
+        {
+          keep: "トレーナーの声かけや伴走があると、あと少しの一歩が出やすいタイプです。",
+          menuText: "一人では続きにくい方にも、丁寧な声かけで前向きに取り組める体験をご用意します。"
+        }
+      ],
+      improve: [
+        {
+          feature: "身体を整えるほど調子が上がる傾向があります。姿勢、呼吸、可動域を見直すことでトレーニング効果も出しやすくなります。",
+          menuTextAdd: "姿勢チェック、ストレッチ、フォームづくりを含めて、無理なく土台から整えます。"
+        },
+        {
+          feature: "適度な負荷と達成感が変化のスイッチになりやすいタイプです。安全に効かせることで満足感が高まります。",
+          menuTextAdd: "正しいフォームでしっかり効かせ、終わった後に手応えを感じられる内容にします。"
+        }
+      ]
+    };
+
+    const state = {
+      index: 0,
+      answers: Array(questions.length).fill(null)
+    };
+
+    const startButton = document.getElementById("startButton");
+    const diagnosis = document.getElementById("diagnosis");
+    const result = document.getElementById("result");
+    const questionCount = document.getElementById("questionCount");
+    const axisName = document.getElementById("axisName");
+    const questionAxis = document.getElementById("questionAxis");
+    const questionText = document.getElementById("questionText");
+    const answersEl = document.getElementById("answers");
+    const barFill = document.getElementById("barFill");
+    const backButton = document.getElementById("backButton");
+    const nextButton = document.getElementById("nextButton");
+    const restartButton = document.getElementById("restartButton");
+
+    document.querySelectorAll(".cta-area a")[0].href = bookingUrl;
+    document.querySelectorAll(".cta-area a")[1].href = lineUrl;
+
+    function renderQuestion() {
+      const item = questions[state.index];
+      const currentAnswer = state.answers[state.index];
+      const progress = (state.index / questions.length) * 100;
+
+      questionCount.textContent = `${state.index + 1} / ${questions.length}`;
+      axisName.textContent = item.axisName;
+      questionAxis.textContent = item.label;
+      questionText.textContent = item.text;
+      barFill.style.width = `${progress}%`;
+      backButton.disabled = state.index === 0;
+      backButton.style.opacity = state.index === 0 ? "0.45" : "1";
+      nextButton.textContent = state.index === questions.length - 1 ? "結果を見る" : "次へ";
+      nextButton.disabled = currentAnswer === null;
+      nextButton.style.opacity = currentAnswer === null ? "0.55" : "1";
+
+      answersEl.innerHTML = "";
+      item.answers.forEach((answer, answerIndex) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `answer${currentAnswer === answerIndex ? " selected" : ""}`;
+        button.innerHTML = `<span class="answer-title">${answer.text}</span><span class="answer-note">${answer.note}</span>`;
+        button.addEventListener("click", () => {
+          state.answers[state.index] = answerIndex;
+          renderQuestion();
+        });
+        answersEl.appendChild(button);
+      });
+    }
+
+    function getScores() {
+      const scores = {
+        purpose: [0, 0],
+        action: [0, 0],
+        environment: [0, 0],
+        improve: [0, 0]
+      };
+
+      questions.forEach((question, index) => {
+        const selected = state.answers[index];
+        const value = question.answers[selected].value;
+        scores[question.axis][value] += 1;
+      });
+
+      return {
+        purpose: scores.purpose[1] > scores.purpose[0] ? 1 : 0,
+        action: scores.action[1] > scores.action[0] ? 1 : 0,
+        environment: scores.environment[1] > scores.environment[0] ? 1 : 0,
+        improve: scores.improve[1] > scores.improve[0] ? 1 : 0
+      };
+    }
+
+    function showResult() {
+      const scores = getScores();
+      const key = `${scores.purpose}${scores.action}${scores.environment}${scores.improve}`;
+      const labels = [
+        axisLabels.purpose[scores.purpose],
+        axisLabels.action[scores.action],
+        axisLabels.environment[scores.environment],
+        axisLabels.improve[scores.improve]
+      ];
+
+      const feature = [
+        copyByAxis.purpose[scores.purpose].feature,
+        copyByAxis.improve[scores.improve].feature
+      ].join("");
+
+      const keep = [
+        copyByAxis.action[scores.action].keep,
+        copyByAxis.environment[scores.environment].keep
+      ].join("");
+
+      const start = copyByAxis.purpose[scores.purpose].start;
+      const menu = copyByAxis.action[scores.action].menu;
+      const menuText = [
+        copyByAxis.environment[scores.environment].menuText,
+        copyByAxis.improve[scores.improve].menuTextAdd
+      ].join("");
+
+      document.getElementById("resultTitle").textContent = typeNames[key];
+      document.getElementById("resultCode").textContent = labels.join(" / ");
+      document.getElementById("resultFeature").textContent = feature;
+      document.getElementById("resultKeep").textContent = keep;
+      document.getElementById("resultStart").textContent = start;
+      document.getElementById("resultMenu").textContent = menu;
+      document.getElementById("resultMenuText").textContent = menuText;
+
+      diagnosis.classList.remove("active");
+      result.classList.add("active");
+      barFill.style.width = "100%";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    startButton.addEventListener("click", () => {
+      document.querySelector(".hero").style.display = "none";
+      diagnosis.classList.add("active");
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    backButton.addEventListener("click", () => {
+      if (state.index > 0) {
+        state.index -= 1;
+        renderQuestion();
+      }
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (state.answers[state.index] === null) return;
+
+      if (state.index === questions.length - 1) {
+        showResult();
+        return;
+      }
+
+      state.index += 1;
+      renderQuestion();
+    });
+
+    restartButton.addEventListener("click", () => {
+      state.index = 0;
+      state.answers = Array(questions.length).fill(null);
+      result.classList.remove("active");
+      diagnosis.classList.add("active");
+      renderQuestion();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</body>
+</html>
